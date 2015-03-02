@@ -37,7 +37,7 @@ public class PSO {
 	//neighborhood topology variables
 	public static int GLOBAL = 0;
 	public static int RING = 1;
-	public static int vonNEUMANN = 2;
+	public static int VONNEUMANN = 2;
 	public static int RANDOM = 4;
 	public static int topology;
 	public static int k = 5;
@@ -56,6 +56,18 @@ public class PSO {
 
 	public static void main(String[] args) 
 	{
+		//take in the input from the user
+		totalNumberOfParticles = Integer.parseInt(args[1]);
+		totalNumberOfIterations = Integer.parseInt(args[2]);
+		numberOfDimensions = Integer.parseInt(args[4]);
+
+		System.out.println("\n\nA COMPARISON OF NEIGHBORHOOD TOPOLOGIES IN PARTICLE SWARM OPTIMIZATION");
+		System.out.println("Testing the impact of neighborhood toplogys on the performace of the Particle Swarm Optimzation (PSO) algorithm on a st of three common benchmark functions.");
+		System.out.println("---------------------");
+		System.out.println("By Gabby Grandin, Clarence Johnson, III, Ryan Kulesza, & Andrew Miller-Smith");
+		System.out.println("---------------------");
+
+
 		//standard PSO parameters
 		neighborhoodTheta = 2.05;		
 		personalTheta = 2.05;
@@ -75,19 +87,19 @@ public class PSO {
 		totalNumberOfParticles = 50;
 
 		//which neighborhood topology?
-		if(gl)
+		if(args[0].contains("gl"))
 		{
 			topology = GLOBAL;
 			particlesPerNeighborhood = totalNumberOfParticles;
 		}
-		else if(ri)
+		else if(args[0].contains("ri"))
 		{
 			topology = RING;
 			particlesPerNeighborhood = 3;
 		}
-		else if(vn)
+		else if(args[0].contains("vn"))
 		{
-			topology = vonNEUMANN;
+			topology = VONNEUMANN;
 			particlesPerNeighborhood = 5;
 
 			//specify the number of rows and columns for the grid of particles in vonNeumann neighborhood
@@ -115,7 +127,7 @@ public class PSO {
 			numberOfRowsVonNeumann = middleFactor;
 			numberOfColumnsVonNeumann = totalNumberOfParticles/middleFactor;
 		}
-		else if (ra)
+		else if (args[0].contains("ra"))
 		{
 			topology = RANDOM;
 			particlesPerNeighborhood = k;
@@ -126,19 +138,19 @@ public class PSO {
 		}
 
 		//which test function? 
-		if (ack)
+		if (args[3].contains("ack"))
 		{
 			function = ACKLEY;
 		}
-		else if (ras)
+		else if (args[3].contains("ras"))
 		{
 			function = RASTRIGIN;
 		}
-		else if (rok)
+		else if (args[3].contains("rok"))
 		{
 			function = ROSENBROCK;
 		}
-		else if (sph)
+		else if (args[3].contains("sph"))
 		{
 			function = SPHERE;
 		}
@@ -147,6 +159,8 @@ public class PSO {
 			System.out.println("Function Selection Error");
 		}
 
+		System.out.println("\nNEIGHBORHOOD TOPOLOGY: " + args[0] + "\nSWARM SIZE: " + args[1] + "\nITERATIONS: " + args[2]);
+		System.out.println("FUNCTION TO OPTIMIZE: " + args[3] + "\nDIMENSIONALITY: " + args [4]);
 		/*
 		 * Done initializing!
 		 * Lets start running tests... 

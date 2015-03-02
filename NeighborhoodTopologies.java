@@ -47,7 +47,7 @@ public class NeighborhoodTopologies {
 		}
 
 		//vonNEUMANN
-		else if (PSO.topology == PSO.vonNEUMANN) 
+		else if (PSO.topology == PSO.VONNEUMANN) 
 		{
 			//to add in the 4 neighbors, must get the particle grid dimensions from PSO
 			int numberOfRowsInGrid = PSO.numberOfRowsVonNeumann;
