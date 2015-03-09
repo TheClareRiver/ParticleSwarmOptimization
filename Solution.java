@@ -6,7 +6,7 @@ public class Solution {
 
 	private int particleNumber;
 	private double value;
-	private Vector2D position;
+	private double position[];
 	private int iterationCreated;
 
 	public Solution() 
@@ -17,25 +17,12 @@ public class Solution {
 		iterationCreated = 0;
 	}
 
-	public Solution(int newParticleNumber, double newValue, Vector2D newPosition, int newIterationCreated) 
+	public Solution(int newParticleNumber, double newValue, double newPosition[], int newIterationCreated) 
 	{
 		particleNumber = newParticleNumber;
 		value = newValue;
-		position = newPosition.returnCopy();
+		position = newPosition;
 		iterationCreated = newIterationCreated;
-	}
-
-	public Solution getCopy() 
-	{
-		return  new Solution(particleNumber, value, position, iterationCreated);
-	}
-
-	public void copyFrom(Solution s) 
-	{
-		particleNumber = s.getParticleNumber();
-		value = s.getFunctionValue();
-		position = s.getPositionCopy();
-		iterationCreated = s.getIterationCreated();
 	}
 
 	public int getParticleNumber() 
@@ -52,28 +39,26 @@ public class Solution {
 	{
 		return value;
 	}
+	
+	public void setFunctionValueG(double newGBest)
+	{
+		
+		value = newGBest;
+	}
 
 	public void setFunctionValue(double newValue) 
 	{
 		value = newValue;
 	}
 
-	// return the actual position
-	public Vector2D getPosition() 
+	public double[] getPosition() 
 	{
 		return position;
 	}
-
-	// return a copy of the position
-	public Vector2D getPositionCopy() 
+	
+	public void setPosition(double newPosition[]) 
 	{
-		return position.returnCopy();
-	}
-
-	// copy from a given position to this position
-	public void copyFromPosition(Vector2D inPosition) 
-	{
-		position.copy(inPosition);
+		position = newPosition;
 	}
 
 	public int getIterationCreated() 

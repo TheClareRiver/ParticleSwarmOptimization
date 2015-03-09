@@ -22,7 +22,7 @@ public class NeighborhoodTopologies {
 		//RING
 		else if (PSO.topology == PSO.RING) 
 		{
-			for (int i=1; i<size; i++) 
+			for (int i=0; i<size; i++) 
 			{
 				particleMatrix[i][i] = 1;
 
@@ -59,7 +59,7 @@ public class NeighborhoodTopologies {
 
 				//calculate the grid location [row, column] of the particle
 				int row = i/numberOfColumnsInGrid;
-				int column = (i%numberOfColumnsInGrid)-1;
+				int column = (i%numberOfColumnsInGrid);
 
 				//calculate the grid location [row, column] for each neighbor
 				int neighborGridLocation;

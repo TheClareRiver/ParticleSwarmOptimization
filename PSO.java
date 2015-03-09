@@ -2,10 +2,6 @@
 //Written by Gabby Grandin
 //March 1st 2015
 
-/*
- * Still Need: Command line input parser -> set variables using input
- */
-
 import java.util.Random;
 
 public class PSO {
@@ -30,9 +26,9 @@ public class PSO {
 	//particle variables
 	public static int totalNumberOfParticles;
 	public static int particlesPerNeighborhood;
-	private static Particle arrayOfParticles[];
-	private static Particle neighborhoods[][];
-	public static Solution globalBest;
+	public static Particle arrayOfParticles[];
+	public static Particle neighborhoods[][];
+	public static Solution globalBest; 
 
 	//neighborhood topology variables
 	public static int GLOBAL = 0;
@@ -53,20 +49,15 @@ public class PSO {
 
 	//for random numbers
 	private static Random randomNumber = new Random();
-
+	
 	public static void main(String[] args) 
 	{
 		//take in the input from the user
-		totalNumberOfParticles = Integer.parseInt(args[1]);
-		totalNumberOfIterations = Integer.parseInt(args[2]);
-		numberOfDimensions = Integer.parseInt(args[4]);
-
 		System.out.println("\n\nA COMPARISON OF NEIGHBORHOOD TOPOLOGIES IN PARTICLE SWARM OPTIMIZATION");
-		System.out.println("Testing the impact of neighborhood toplogys on the performace of the Particle Swarm Optimzation (PSO) algorithm on a st of three common benchmark functions.");
+		System.out.println("Testing the impact of neighborhood toplogys and number of particles on the performace of the Particle Swarm Optimzation (PSO).");
 		System.out.println("---------------------");
 		System.out.println("By Gabby Grandin, Clarence Johnson, III, Ryan Kulesza, & Andrew Miller-Smith");
 		System.out.println("---------------------");
-
 
 		//standard PSO parameters
 		neighborhoodTheta = 2.05;		
@@ -78,26 +69,26 @@ public class PSO {
 		totalNumberOfRuns = 50; 
 
 		//how many iterations?
-		totalNumberOfIterations = 50000;
+		totalNumberOfIterations = Integer.parseInt(args[2]);
 
 		//how many dimensions?
-		numberOfDimensions = 30; 
+		numberOfDimensions = Integer.parseInt(args[4]); 
 
 		//how many particles?
-		totalNumberOfParticles = 50;
+		totalNumberOfParticles = Integer.parseInt(args[1]);
 
 		//which neighborhood topology?
-		if(args[0].contains("gl"))
+		if (args[0].contains("gl"))
 		{
 			topology = GLOBAL;
 			particlesPerNeighborhood = totalNumberOfParticles;
 		}
-		else if(args[0].contains("ri"))
+		else if (args[0].contains("ri"))
 		{
 			topology = RING;
 			particlesPerNeighborhood = 3;
 		}
-		else if(args[0].contains("vn"))
+		else if (args[0].contains("vn"))
 		{
 			topology = VONNEUMANN;
 			particlesPerNeighborhood = 5;
@@ -159,8 +150,10 @@ public class PSO {
 			System.out.println("Function Selection Error");
 		}
 
+		//print user input variables
 		System.out.println("\nNEIGHBORHOOD TOPOLOGY: " + args[0] + "\nSWARM SIZE: " + args[1] + "\nITERATIONS: " + args[2]);
 		System.out.println("FUNCTION TO OPTIMIZE: " + args[3] + "\nDIMENSIONALITY: " + args [4]);
+		
 		/*
 		 * Done initializing!
 		 * Lets start running tests... 
@@ -177,22 +170,13 @@ public class PSO {
 		{
 			currentRunNumber = i+1;
 			System.out.println("Run " +currentRunNumber+ ":");
-
-			//randomly shift the location of the optimum in the function's search space
-			double shiftVectorAmount = TestFunctions.SHIFT_RANGE[function]*randomNumber.nextDouble();
-			if (randomNumber.nextDouble() < 0.5) 
-			{
-				shiftVectorAmount = shiftVectorAmount*-1.0;
-			}
-
-			//set the function parameters now that the shift for this run is known
-			TestFunctions.setShiftVector(new Vector2D(numberOfDimensions, shiftVectorAmount));
-
+			
 			//initialize global-best value to a very large number  
 			globalBest = new Solution();
 
 			//initialize the particles, and store them in a particle array
-			Particle arrayOfParticles[] = Particle.initializeParticles();  
+			arrayOfParticles = new Particle[totalNumberOfParticles];
+			arrayOfParticles = Particle.initializeParticles();  
 
 			//initialize the particle matrix and neighborhoods
 			initializeTopology();
@@ -210,13 +194,13 @@ public class PSO {
 				//NUMBER OF PARTICLES LOOP
 				for (int k=0; k<totalNumberOfParticles; k++) //tracking particles
 				{
-					Particle.update(arrayOfParticles[k], neighborhoods); //update the particles
+					Particle.update(arrayOfParticles[k]); //update the particles
 				}
 				//END PARTICLES LOOP
-
+			
 				if (currentIterationNumber%10 == 0)
 				{
-					System.out.println(globalBest); //printing global-best value every 10 iterations
+					System.out.println(globalBest.getFunctionValue()); //printing global-best value every 10 iterations
 
 					if (currentIterationNumber%10000 == 0)
 					{
@@ -228,14 +212,14 @@ public class PSO {
 			//END ITERATIONS LOOP
 
 			//printing global-best value
-			System.out.println("Final Value, Run " +currentRunNumber+ ": " +globalBest);
+			System.out.println("Final Value, Run " +currentRunNumber+ ": " +globalBest.getFunctionValue());
 			System.out.println();
 		
 		}
 		//END RUNS LOOP
 		
 		long endTimeAllRuns = System.currentTimeMillis(); //end timer
-		double secondsPerRun = ((endTimeAllRuns - startTimeAllRuns)*1000.0)/totalNumberOfRuns; //average time per run
+		double secondsPerRun = ((endTimeAllRuns - startTimeAllRuns)/1000.0)/totalNumberOfRuns; //average time per run
 		
 		System.out.println("DONE");
 		System.out.println();
@@ -247,17 +231,21 @@ public class PSO {
 	public static void initializeTopology()
 	{
 		//initialize the particleMatrix given the neighborhood topology
-		new NeighborhoodTopologies(); 
+		new NeighborhoodTopologies();
+		neighborhoods = new Particle[totalNumberOfParticles][particlesPerNeighborhood];
 
 		//initialize the neighborhoods, and store them in an array of neighborhoods
 		int particalNeighbors[] = new int[particlesPerNeighborhood];   
 		for (int p=0; p<totalNumberOfParticles; p++) //for each particle...
 		{
 			particalNeighbors = NeighborhoodTopologies.getNeighborhood(p); //find the neighbor particle numbers
+			
 			for (int q=0; q<particlesPerNeighborhood; q++) //for each neighbor...
 			{
 				int particleNumber = particalNeighbors[q]; //get the particle number and use it to...
-				neighborhoods[p][q] = arrayOfParticles[particleNumber]; //get the actual particle using the particle array, then store the particles in a neighborhood array
+				
+				Particle part = arrayOfParticles[particleNumber];
+				neighborhoods[p][q] = part;  //get the actual particle using the particle array, then store the particles in a neighborhood array
 			}
 		}	
 	}
